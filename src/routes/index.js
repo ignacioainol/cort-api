@@ -1,7 +1,7 @@
-const { Router } = require('express');
-const { getUsers } = require('../controllers/index.controller');
-const router = Router();
+const express = require('express');
+const app = express();
 
-router.get('/users', getUsers);
+app.use('/api/users', require('./users'));
 
-module.exports = router;
+
+module.exports = app;
