@@ -1,5 +1,15 @@
 const { connecting } = require('./connect');
 
+const createUser = async (body) => {
+    const connection = await connecting();
+
+    try {
+        console.log('body desde repository: ', body);
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 const getAll = async () => {
     const connection = await connecting();
 
@@ -19,7 +29,6 @@ const getAll = async () => {
 
     } catch (error) {
         console.log(error);
-        throw { error };
     } finally {
         connection.release();
     }
