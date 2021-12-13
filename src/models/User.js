@@ -1,10 +1,11 @@
+const res = require('express/lib/response');
 const { connecting } = require('./connect');
 
-const createUser = async (body) => {
-    const connection = await connecting();
+const createUser = (user) => {
+    // const connection = await connecting();
 
     try {
-        console.log('body desde repository: ', body);
+        return user;
     } catch (error) {
         console.log(error);
     }
@@ -35,5 +36,6 @@ const getAll = async () => {
 }
 
 module.exports = {
-    getAll
+    getAll,
+    createUser
 }
