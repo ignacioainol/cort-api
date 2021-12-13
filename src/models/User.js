@@ -1,13 +1,24 @@
 const res = require('express/lib/response');
 const { connecting } = require('./connect');
 
-const createUser = (user) => {
-    // const connection = await connecting();
+const createUser = async (user) => {
+    const connection = await connecting();
 
     try {
-        return user;
+        const query = `INSERT INTO users
+                      (username, firstname, lastname, email, password, role_id) 
+                      VALUES ($1, $2, $3, $4, $5, $6)
+                      RETURNING *`;
+
+        const values = [user.username, user.firstname, user.lastname, user.email, user.password, user.role_id];
+        const result = await connection.query(query, values);
+        let data = result.rows[0];
+        return data ? data : null;
+
     } catch (error) {
         console.log(error);
+    } finally {
+        connection.release();
     }
 }
 

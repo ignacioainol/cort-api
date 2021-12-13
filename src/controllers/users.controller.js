@@ -4,7 +4,8 @@ const { createUser } = require('../models/User');
 
 const create = async (req, res) => {
     try {
-        res.send(createUser(req.body));
+        const newUser = await createUser(req.body);
+        res.status(201).send(newUser);
     } catch (error) {
         console.log(error);
     }
