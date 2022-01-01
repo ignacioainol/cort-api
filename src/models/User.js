@@ -35,9 +35,33 @@ const getAll = async () => {
         const result = await connection.query(query);
         let rows = result.rows;
 
-        // for (let i = 0; i < rows.length; i++) {
-        //     delete rows[i].password;
-        // }
+        for (let i = 0; i < rows.length; i++) {
+            delete rows[i].password;
+        }
+
+        return rows;
+
+    } catch (error) {
+        console.log(error);
+    } finally {
+        connection.release();
+    }
+}
+
+const getAllEscorts = async () => {
+    const connection = await connecting();
+
+    try {
+        const query = `
+        SELECT *
+        FROM users
+        WHERE role_id = $1
+        AND active = $2
+    `;
+        const values = [3, true];
+        const result = await connection.query(query, values);
+        let rows = result.rows;
+
 
         return rows;
 
@@ -50,5 +74,6 @@ const getAll = async () => {
 
 module.exports = {
     getAll,
+    getAllEscorts,
     createUser
 }
