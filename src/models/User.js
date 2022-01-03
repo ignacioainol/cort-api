@@ -55,6 +55,8 @@ const getAllEscorts = async () => {
         const query = `
         SELECT *
         FROM users
+        INNER JOIN attributes
+        ON attributes.user_id = users.user_id
         WHERE role_id = $1
         AND active = $2
     `;

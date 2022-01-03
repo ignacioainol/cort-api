@@ -31,6 +31,17 @@ create table images(
 			references users(user_id)
 )
 
+create table attributes(
+	attribute_id INT GENERATED ALWAYS AS IDENTITY,
+	attribute_servicio varchar(255),
+	attribute_price int,
+	user_id int,
+	primary key(attribute_id),
+	constraint fk_user
+		foreign key(user_id)
+			references users(user_id)
+)
+
 CREATE TABLE regions (
   region_id int GENERATED ALWAYS AS IDENTITY,
   region_name varchar(100) DEFAULT NULL,
