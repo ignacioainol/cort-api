@@ -1,4 +1,3 @@
-const res = require('express/lib/response');
 const { connecting } = require('./connect');
 
 const createUser = async (user) => {
