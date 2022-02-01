@@ -87,10 +87,8 @@ const loginUser = async (email, password) => {
 
         if (rows.length > 0) {
             delete rows[0].password;
-            console.log(rows)
             return rows[0];
         } else {
-            console.log("no user ");
             return false;
         }
     } catch (error) {
@@ -100,9 +98,30 @@ const loginUser = async (email, password) => {
     }
 }
 
+const getUserById = async (user_id) => {
+    const connection = await connecting();
+
+    try {
+        const query = `
+            SELECT * 
+            FROM users
+            WHERE user_id = $1`;
+
+        const values = [user_id];
+        const result = await connection.query(query, values);
+        let rows = result.rows;
+
+        return rows[0];
+
+    } catch (error) {
+        return error.message;
+    }
+}
+
 module.exports = {
     getAll,
     getAllEscorts,
     createUser,
-    loginUser
+    loginUser,
+    getUserById
 }

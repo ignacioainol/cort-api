@@ -1,4 +1,4 @@
-const { createUser, getAllEscorts, getAll, loginUser } = require('../models/User');
+const { createUser, getAllEscorts, getAll, loginUser, getUserById } = require('../models/User');
 const { getToken } = require('../utils');
 
 
@@ -44,10 +44,28 @@ const signin = async (req, res) => {
                 token: getToken(signinUser)
             });
         } else {
-            res.status(401).send({ msg: 'Invalid Email or Password' });
+            res.status(401).send({ message: 'Email o Password Incorrecto.' });
         }
     } catch (error) {
         res.status(500).send(error.message);
+    }
+}
+
+const updatePassword = async (req, res) => {
+    const { user_id, password, newPassword, confirmNewPassword } = req.body;
+    try {
+        const user = await getUserById(user_id);
+        if (user.password === password) {
+            if (newPassword === confirmNewPassword) {
+                res.send("wena xoro, se cambiara pa password")
+            } else {
+                res.status(400).send({ msg: "Las contraseñas no coinciden" });
+            }
+        } else {
+            res.status(401).send({ msg: "La contraseña no coincide con su contraseña actual" });
+        }
+    } catch (error) {
+        res.status(500).send(error.message)
     }
 }
 
@@ -55,5 +73,6 @@ module.exports = {
     create,
     getAllUsers,
     getEscorts,
-    signin
+    signin,
+    updatePassword
 }
