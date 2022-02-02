@@ -115,6 +115,31 @@ const getUserById = async (user_id) => {
 
     } catch (error) {
         return error.message;
+    } finally {
+        connection.release();
+    }
+}
+
+const changePassword = async (user_id, newPassword) => {
+    const connection = await connecting();
+    try {
+        const query = `
+            UPDATE users
+            SET password = $1,
+            first_login = $2
+            WHERE user_id = $3
+            RETURNING *
+        `;
+
+        const values = [newPassword, false, user_id];
+        const result = await connection.query(query, values);
+        console.log(result);
+        return result.rows[0];
+
+    } catch (error) {
+        return error.message;
+    } finally {
+        connection.release();
     }
 }
 
@@ -123,5 +148,6 @@ module.exports = {
     getAllEscorts,
     createUser,
     loginUser,
-    getUserById
+    getUserById,
+    changePassword
 }

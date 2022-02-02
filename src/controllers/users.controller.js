@@ -1,4 +1,4 @@
-const { createUser, getAllEscorts, getAll, loginUser, getUserById } = require('../models/User');
+const { createUser, getAllEscorts, getAll, loginUser, getUserById, changePassword } = require('../models/User');
 const { getToken } = require('../utils');
 
 
@@ -53,20 +53,27 @@ const signin = async (req, res) => {
 
 const updatePassword = async (req, res) => {
     const { user_id, password, newPassword, confirmNewPassword } = req.body;
-    try {
-        const user = await getUserById(user_id);
-        if (user.password === password) {
-            if (newPassword === confirmNewPassword) {
-                res.send("wena xoro, se cambiara pa password")
+
+    if (password === '' || newPassword === '' || confirmNewPassword === '') {
+        res.status(400).send({ message: "Todos los campos son requeridos." });
+    } else {
+        try {
+            const user = await getUserById(user_id);
+            if (user.password === password) {
+                if (newPassword === confirmNewPassword) {
+                    const updatedPassword = await changePassword(user_id, newPassword);
+                    res.status(200).send(updatedPassword);
+                } else {
+                    res.status(400).send({ message: "La nueva contraseña no coinciden con la verificación." });
+                }
             } else {
-                res.status(400).send({ msg: "Las contraseñas no coinciden" });
+                res.status(401).send({ message: "La contraseña no coincide con su contraseña actual" });
             }
-        } else {
-            res.status(401).send({ msg: "La contraseña no coincide con su contraseña actual" });
+        } catch (error) {
+            res.status(500).send(error.message)
         }
-    } catch (error) {
-        res.status(500).send(error.message)
     }
+
 }
 
 module.exports = {
