@@ -5,11 +5,11 @@ const createUser = async (user) => {
 
     try {
         const query = `INSERT INTO users
-                      (role_id, nickname, email, phonenumber, commune_id, age) 
-                      VALUES ($1, $2, $3, $4, $5, $6)
+                      (role_id, nickname, email, phonenumber, commune_id, age, password) 
+                      VALUES ($1, $2, $3, $4, $5, $6, $7)
                       RETURNING *`;
 
-        const values = [user.role_id, user.nickname, user.email, user.phone, user.commune_id, user.age];
+        const values = [user.role_id, user.nickname, user.email, user.phone, user.commune_id, user.age, user.password];
         const result = await connection.query(query, values);
         let data = result.rows[0];
         console.log(query);

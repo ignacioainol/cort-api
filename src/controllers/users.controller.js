@@ -1,10 +1,19 @@
 const { createUser, getAllEscorts, getAll, loginUser, getUserById, changePassword } = require('../models/User');
-const { getToken } = require('../utils');
+const { getToken, emailRegistered } = require('../utils');
+const generator = require('generate-password');
 
 
 const create = async (req, res) => {
+
+    const password = generator.generate({
+        length: 10,
+        numbers: true
+    });
+
     try {
+        req.body.password = password;
         const newUser = await createUser(req.body);
+        emailRegistered({ nickname: req.body.nickname, email: req.body.email, password: req.body.password });
         res.status(201).send(newUser);
     } catch (error) {
         console.log(error);
