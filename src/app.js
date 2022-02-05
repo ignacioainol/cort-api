@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const cors = require('cors')
-const path = require('path')
+const fileUpload = require('express-fileupload');
 
 //config
 app.set('port', 3000 || process.env.PORT);
@@ -10,6 +10,7 @@ app.set('port', 3000 || process.env.PORT);
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors());
+app.use(fileUpload());
 
 // Llama al archivo en donde estan todas las rutas de la api
 app.use(require('./routes'));

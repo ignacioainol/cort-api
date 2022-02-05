@@ -1,7 +1,8 @@
 const { createUser, getAllEscorts, getAll, loginUser, getUserById, changePassword } = require('../models/User');
 const { getToken, emailRegistered } = require('../utils');
 const generator = require('generate-password');
-
+const fileUpload = require('express-fileupload');
+const path = require('path')
 
 const create = async (req, res) => {
 
@@ -27,6 +28,28 @@ const getAllUsers = async (req, res) => {
     } catch (error) {
         console.log(error);
     }
+}
+
+const changeAvatar = async (req, res) => {
+    try {
+        // return res.send(req.files);
+
+        if (!req.files) {
+            return res.status(400).send({ message: 'No Uploaded Image' });
+        }
+
+        const file = req.files.file;
+        file.mv(path.join(__dirname, '/../../../escort-frontend/public/uploads/' + file.name), err => {
+            if (err) {
+                console.log(err);
+                return res.status(500).send(err);
+            }
+        });
+        // res.send(path.join(__dirname, '/../../../escort-frontend/public/uploads'));
+    } catch (error) {
+
+    }
+
 }
 
 const getEscorts = async (req, res) => {
@@ -90,5 +113,6 @@ module.exports = {
     getAllUsers,
     getEscorts,
     signin,
-    updatePassword
+    updatePassword,
+    changeAvatar
 }
