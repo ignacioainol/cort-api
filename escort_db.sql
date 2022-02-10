@@ -443,3 +443,6 @@ ADD CONSTRAINT uniq_user_email UNIQUE (email);
 select * from users
 
 ALTER TABLE users ADD COLUMN first_login BOOLEAN DEFAULT true;
+
+ALTER TABLE users
+ALTER avatar SET DEFAULT 'avatar.webp'; 

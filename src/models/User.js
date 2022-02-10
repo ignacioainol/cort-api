@@ -143,11 +143,31 @@ const changePassword = async (user_id, newPassword) => {
     }
 }
 
+const updateAvatar = async (userId, newAvatar) => {
+    const connection = await connecting();
+
+    try {
+        const query = `UPDATE users 
+                       SET avatar = $1
+                       WHERE user_id = $2
+                       RETURNING *`;
+        const values = [newAvatar, userId];
+        const result = await connection.query(query, values);
+        // console.log(result.rows[0]);
+        return result.rows[0];
+    } catch (error) {
+        return error.message;
+    } finally {
+        connection.release();
+    }
+}
+
 module.exports = {
     getAll,
     getAllEscorts,
     createUser,
     loginUser,
     getUserById,
-    changePassword
+    changePassword,
+    updateAvatar
 }

@@ -1,8 +1,9 @@
-const { createUser, getAllEscorts, getAll, loginUser, getUserById, changePassword } = require('../models/User');
+const { createUser, getAllEscorts, getAll, loginUser, getUserById, changePassword, updateAvatar } = require('../models/User');
 const { getToken, emailRegistered } = require('../utils');
 const generator = require('generate-password');
-const fileUpload = require('express-fileupload');
+// const fileUpload = require('express-fileupload');
 const path = require('path')
+const fs = require('fs');
 
 const create = async (req, res) => {
 
@@ -32,22 +33,54 @@ const getAllUsers = async (req, res) => {
 
 const changeAvatar = async (req, res) => {
     try {
-        // return res.send(req.files);
 
         if (!req.files) {
             return res.status(400).send({ message: 'No Uploaded Image' });
         }
 
         const file = req.files.file;
-        file.mv(path.join(__dirname, '/../../../escort-frontend/public/uploads/' + file.name), err => {
+        const userId = req.body.userId
+        // const dir = await path.join(__dirname, `/../../../escort-frontend/public/uploads/${userId}`);
+
+        // if (!fs.existsSync(dir)) {
+        //     res.send("llego aca res send 46");
+        //     fs.mkdiAsync(dir);
+        //     return;
+        // }
+
+
+        file.mv(path.join(__dirname, `/../../../escort-frontend/public/uploads/${userId}/${file.name}`), err => {
             if (err) {
                 console.log(err);
                 return res.status(500).send(err);
             }
         });
-        // res.send(path.join(__dirname, '/../../../escort-frontend/public/uploads'));
-    } catch (error) {
 
+
+        const userUpdatedAvatar = await updateAvatar(userId, file.name);
+        // console.log(userUpdatedAvatar)
+        // res.send(userUpdatedAvatar);
+        // return;
+
+        // res.status(201).json({
+        //     fileName: file.name, filePath: `/uploads/${file.name}`
+        // });
+
+        if (userUpdatedAvatar) {
+            const { user_id, nickname, role_id, first_login, avatar } = userUpdatedAvatar;
+            res.status(200).send({
+                user_id,
+                nickname,
+                role_id,
+                first_login,
+                avatar,
+                token: getToken(userUpdatedAvatar)
+            });
+        }
+
+
+    } catch (error) {
+        res.status(error.message);
     }
 
 }
@@ -67,12 +100,13 @@ const signin = async (req, res) => {
         const signinUser = await loginUser(email, password);
 
         if (signinUser) {
-            const { user_id, nickname, role_id, first_login } = signinUser;
+            const { user_id, nickname, role_id, first_login, avatar } = signinUser;
             res.send({
                 user_id,
                 nickname,
                 role_id,
                 first_login,
+                avatar,
                 token: getToken(signinUser)
             });
         } else {
